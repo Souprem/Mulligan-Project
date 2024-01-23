@@ -1,0 +1,38 @@
+Deck
+4 Dauthi Voidwalker
+2 Lightning Bolt
+1 Castle Locthwain
+4 Blood Crypt
+4 Fable of the Mirror-Breaker
+2 Fatal Push
+4 Grief
+2 Terminate
+1 Undying Evil
+1 Polluted Delta
+4 Thoughtseize
+4 Not Dead After All
+1 Molten Collapse
+4 Orcish Bowmasters
+4 Ragavan, Nimble Pilferer
+1 Kolaghan's Command
+2 Sheoldred, the Apocalypse
+2 Swamp
+1 Takenuma, Abandoned Mire
+2 Marsh Flats
+1 Verdant Catacombs
+1 Swamp
+1 Kroxa, Titan of Death's Hunger
+4 Bloodstained Mire
+3 Blackcleave Cliffs
+
+Sideboard
+1 Bonecrusher Giant
+2 Legion's End
+1 Hidetsugu Consumes All
+1 Blood Moon
+3 Leyline of the Void
+1 Kolaghan's Command
+2 Magus of the Moon
+2 Engineered Explosives
+2 Chalice of the Void
+

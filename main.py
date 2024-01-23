@@ -3,6 +3,7 @@ import os
 from requests import get
 from json import loads
 from shutil import copyfileobj
+import time
 
 class MyGUI:
     def __init__(self):
@@ -33,8 +34,6 @@ class MyGUI:
         self.createDeckImages()
 
     def pullCardImage(self, cardName):
-        # In this example, we're looking for "Vindicate"
-        search_query = 'Ragavan, Nimble Pilferer'
  
         # Load the card data from Scryfall
         self.card = loads(get(f"https://api.scryfall.com/cards/search?q={cardName}").text)
@@ -43,13 +42,19 @@ class MyGUI:
         self.img_url = self.card['data'][0]['image_uris']['png']
  
         # Save the image
-        with open(f"{cardName}.png", 'wb') as out_file:
-            copyfileobj(get(img_url, stream = True).raw, out_file)
+        with open(f"{self.deckName.get('1.0', tk.END).strip()}/{cardName}.png", 'wb') as out_file:
+            copyfileobj(get(self.img_url, stream = True).raw, out_file)
     
     def createDeckImages(self):
+        os.mkdir(f"{self.deckName.get('1.0', tk.END).strip()}")
         with open(f"{self.deckName.get('1.0', tk.END).strip()}.txt", "r") as f:
             for line in f:
-                self.pullCardImage(line.strip())
+                if (line != "Deck" and line != "Sideboard" and line != "\n"):
+                    line = line.translate(str.maketrans('', '', '0123456789'))
+                    self.pullCardImage(line.strip())
+                    time.sleep(0.05)
+                else:
+                    continue
         # self.createDecklist()
     
     # def createDecklist(self):

@@ -1,4 +1,8 @@
 import tkinter as tk
+import os
+from requests import get
+from json import loads
+from shutil import copyfileobj
 
 class MyGUI:
     def __init__(self):
@@ -21,14 +25,46 @@ class MyGUI:
         self.button = tk.Button(self.root, text="Submit",command=self.save_decklist)
         self.button.pack(padx=15, pady=15)
 
-
-
         self.root.mainloop()
 
     def save_decklist(self):
         with open(f"{self.deckName.get('1.0', tk.END).strip()}.txt", "w") as f: 
             f.write(self.decklist.get("1.0",tk.END))
+        self.createDeckImages()
 
+    def pullCardImage(self, cardName):
+        # In this example, we're looking for "Vindicate"
+        search_query = 'Ragavan, Nimble Pilferer'
+ 
+        # Load the card data from Scryfall
+        self.card = loads(get(f"https://api.scryfall.com/cards/search?q={cardName}").text)
+ 
+        # Get the image URL
+        self.img_url = self.card['data'][0]['image_uris']['png']
+ 
+        # Save the image
+        with open(f"{cardName}.png", 'wb') as out_file:
+            copyfileobj(get(img_url, stream = True).raw, out_file)
+    
+    def createDeckImages(self):
+        with open(f"{self.deckName.get('1.0', tk.END).strip()}.txt", "r") as f:
+            for line in f:
+                self.pullCardImage(line.strip())
+        # self.createDecklist()
+    
+    # def createDecklist(self):
+    #     with open(f"{self.deckName.get('1.0', tk.END).strip()}.txt", "r") as f:
+    #         with open(f"{xself.deckName.get('1.0', tk.END).strip()}_decklist.txt", "w") as f2:
+    #             for line in f:
+    #                 f2.write(line.strip() + "\n")
+    #     self.createDecklistImage()
+
+    # def createDecklistImage(self):
+    #     with open(f"{self.deckName.get('1.0', tk.END).strip()}_decklist.txt", "r") as f:
+    #         with open(f"{self.deckName.get('1.0', tk.END).strip()}_decklist.png", "w") as f2:
+    #             for line in f:
+    #                 f2.write(line.strip() + "\n")
+        
 
 
 MyGUI()

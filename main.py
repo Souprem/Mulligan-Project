@@ -38,10 +38,10 @@ class EnterDecklistGUI:
     def pullCardImage(self, cardName):
  
         # Load the card data from Scryfall
-        self.card = loads(get(f"https://api.scryfall.com/cards/search?q={cardName}").text)
+        self.card = loads(get(f"https://api.scryfall.com/cards/named?exact={cardName}").text)
  
         # Get the image URL
-        self.img_url = self.card['data'][0]['image_uris']['png']
+        self.img_url = self.card['image_uris']['png']
  
         # Save the image
         with open(f"{self.deckName.get('1.0', tk.END).strip()}/{cardName}.png", 'wb') as out_file:
@@ -51,7 +51,7 @@ class EnterDecklistGUI:
         os.mkdir(f"{self.deckName.get('1.0', tk.END).strip()}")
         with open(f"{self.deckName.get('1.0', tk.END).strip()}.txt", "r") as f:
             for line in f:
-                if (line != "Deck" and line != "Sideboard" and line != "\n"):
+                if (line.strip() != "Deck" and line.strip() != "Sideboard" and line.strip() != "\n"):
                     line = line.translate(str.maketrans('', '','0123456789'))
                     self.pullCardImage(line.strip())
                     time.sleep(0.05)
@@ -60,36 +60,43 @@ class EnterDecklistGUI:
     
     def startMulliganGUI(self):
         self.root.destroy()
-        MulliganGUI()
+        MulliganGUI(deckName)
     
 class MulliganGUI:
-    def __init__(self):
+    def __init__(self, deckName):
+        self.deckName = deckName
 
         self.root = tk.Tk()
         self.decklistName = tk.Label(self.root, text="Decklist Name: ", font=("Arial", 20))
         self.decklistName.pack(padx=15, pady=15)
         self.button = tk.Button(self.root, text="Random Card",command=self.printRandomCard)
         self.button.pack(padx=15, pady=15)
+
+        self.deck = []
+        self.createDecklist()
+
         self.root.mainloop()
 
 
-    deck = []
-    with open(f"{deckName}.txt", "r") as f:
-         for line in f:
-            if (line != "Deck" and line != "Sideboard" and line != "\n"):
-                quantity = line.split(" ")[0]
-                quantity = int(quantity)
-                for i in range(quantity):
-                    line = line.translate(str.maketrans('', '','0123456789'))
-                    deck.append(line.strip())
+    
+    def createDecklist(self):
+        with open(f"{self.deckName}.txt", "r") as f:
+            for line in f:
+                if (line != "Deck" and line != "Sideboard" and line != "\n"):
+                    quantity = line.split(" ")[0]
+                    quantity = int(quantity)
+                    for i in range(quantity):
+                        line = line.translate(str.maketrans('', '','0123456789'))
+                        self.deck.append(line.strip())
+        print(self.deck)
         
 
         
     def printRandomCard(self):
-        self.card = deck.pop()
+        self.card = self.deck.pop()
         self.cardName = tk.Label(self.root, text=self.card, font=("Arial", 20))
         self.cardName.pack(padx=15, pady=15)
-        self.cardImage = tk.PhotoImage(file=f"{deckName}.png")
+        self.cardImage = tk.PhotoImage(file=f"./{self.deckName}/{self.card}.png")
         self.cardImageLabel = tk.Label(self.root, image=self.cardImage)
         self.cardImageLabel.pack(padx=15, pady=15)          
 
